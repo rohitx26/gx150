@@ -12,23 +12,29 @@ df = pd.read_csv('./data/users.csv')
 print("✅ Setting up data connection...")
 
 # Create a Pandas filesystem Data Source (GX 1.5+ fluent API)
+source_folder = "./data"
+data_source_name = "data"
 data_source = context.data_sources.add_pandas_filesystem(
-    name="local_pandas_filesystem",
-    base_directory="./data"
+    name=data_source_name, base_directory=source_folder
 )
-
+print("++++++++++++++++++++++++++")
 # Add a Data Asset for the CSV file
-data_asset = data_source.add_csv_asset(
-    name="users_data",
-    filename="users.csv"
+data_asset_name = "users"
+file_csv_asset = data_source.add_csv_asset(name=data_asset_name)
+# Create a Batch Definition
+# batch_definition = data_asset.add_batch_definition_whole_table("users_batch")
+batch_definition_name = "users.csv"
+batch_definition_path = "data/users.csv"
+print("#$#$#$#$##$$#%@$%#$%%$")
+batch_definition = file_csv_asset.add_batch_definition_path(
+    name=batch_definition_name, path=batch_definition_path
 )
 
-# Create a Batch Definition
-batch_definition = data_asset.add_batch_definition_whole_table("users_batch")
+batch = batch_definition.get_batch()
 
 print("✅ Connected to data!")
-print(f"Data Source: {data_source.name}")
-print(f"Data Asset: {data_asset.name}")
+print(f"Data Source: {data_source_name}")
+print(f"Data Asset: {data_asset_name}")
 print(f"Batch Definition: {batch_definition.name}")
 
 print(f"\nData preview:")
