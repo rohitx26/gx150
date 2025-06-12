@@ -1,33 +1,57 @@
-# Great Expectations Tutorial - Learning by Doing
+# Great Expectations Tutorial - Learn by Doing
 
-Welcome to your hands-on Great Expectations tutorial! This tutorial will teach you data validation from scratch through practical examples.
+## What is Great Expectations?
+
+Great Expectations (GX) helps you validate, document, and profile your data to maintain quality and catch issues early.
+
+## Setup
+
+1. **Activate your virtual environment:**
+
+```bash
+source .venv/bin/activate
+```
+
+2. **Install Great Expectations:**
+
+```bash
+pip install great-expectations pandas
+```
+
+3. **Initialize Great Expectations:**
+
+```bash
+great_expectations init
+```
+
+## Tutorial Steps
+
+### Step 1: Create Sample Data
+
+We'll start with a simple CSV file containing user data.
+
+### Step 2: Connect to Data
+
+Configure GX to read your data source.
+
+### Step 3: Create Expectations
+
+Define rules about what your data should look like.
+
+### Step 4: Validate Data
+
+Run validations to check if your data meets expectations.
+
+### Step 5: Generate Reports
+
+Create HTML reports showing validation results.
 
 ## What You'll Learn
 
-1. **Data Context & Setup** - Initialize your first GX project
-2. **Sample Data Creation** - Work with realistic datasets
-3. **Data Sources** - Connect to your data
-4. **Expectations** - Create data quality rules
-5. **Validation** - Check your data against expectations
-6. **Data Documentation** - Generate beautiful reports
-7. **Checkpoints** - Automate validation workflows
+- How to set up Great Expectations
+- Creating and managing data expectations
+- Running validations
+- Interpreting results
+- Best practices for data quality
 
-## Tutorial Structure
-
-```
-gx150/
-├── data/                    # Sample datasets
-├── tutorial_steps/          # Step-by-step Python scripts
-├── great_expectations/      # GX configuration (auto-generated)
-└── reports/                # Validation reports
-```
-
-## Getting Started
-
-Run the tutorial steps in order:
-1. `python tutorial_steps/01_setup_and_basics.py`
-2. `python tutorial_steps/02_create_expectations.py`
-3. `python tutorial_steps/03_validation_and_reports.py`
-4. `python tutorial_steps/04_advanced_patterns.py`
-
-Each step builds on the previous one and includes explanations and exercises!
+Let's get started! Follow the files in order: `step1_data.py`, `step2_connect.py`, etc.
