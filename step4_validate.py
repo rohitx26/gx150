@@ -1,16 +1,22 @@
 import great_expectations as gx
+import pandas as pd
 
-# Get the context
+# Get the context and read the data
 context = gx.get_context()
+df = pd.read_csv('./data/users.csv')
 
-# Get your data and expectations
-datasource = context.get_datasource("local_files")
-data_asset = datasource.get_asset("users_data")
-batch_request = data_asset.build_batch_request()
+# Create a batch request for validation
+batch_request = gx.core.batch.RuntimeBatchRequest(
+    datasource_name="pandas",
+    data_connector_name="default_runtime_data_connector_name", 
+    data_asset_name="users_data",
+    runtime_parameters={"batch_data": df},
+    batch_identifiers={"default_identifier_name": "default_identifier"}
+)
 
 # Run validation
 print("🔍 Running validation...")
-checkpoint = context.add_checkpoint(
+checkpoint = context.add_or_update_checkpoint(
     name="users_checkpoint",
     batch_request=batch_request,
     expectation_suite_name="users_basic_expectations"

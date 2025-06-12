@@ -1,18 +1,24 @@
 import great_expectations as gx
+import pandas as pd
 
-# Get the context and data
+# Get the context and read the data
 context = gx.get_context()
-datasource = context.get_datasource("local_files")
-data_asset = datasource.get_asset("users_data")
+df = pd.read_csv('./data/users.csv')
 
 # Create an Expectation Suite (a collection of expectations)
 expectation_suite_name = "users_basic_expectations"
-suite = context.add_expectation_suite(expectation_suite_name)
+suite = context.add_or_update_expectation_suite(expectation_suite_name)
 
-# Get a validator to work with
-batch_request = data_asset.build_batch_request()
+# For Great Expectations 1.0+, we work with the DataFrame directly
+# Create a validator with the DataFrame
 validator = context.get_validator(
-    batch_request=batch_request,
+    batch_request=gx.core.batch.RuntimeBatchRequest(
+        datasource_name="pandas",
+        data_connector_name="default_runtime_data_connector_name",
+        data_asset_name="users_data",
+        runtime_parameters={"batch_data": df},
+        batch_identifiers={"default_identifier_name": "default_identifier"}
+    ),
     expectation_suite_name=expectation_suite_name
 )
 
