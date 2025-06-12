@@ -1,25 +1,34 @@
 import great_expectations as gx
 import pandas as pd
 
-# Get the context and read the data
+# Get the Data Context
 context = gx.get_context()
-df = pd.read_csv('./data/users.csv')
 
-# Create a batch request for validation
-batch_request = gx.core.batch.RuntimeBatchRequest(
-    datasource_name="pandas",
-    data_connector_name="default_runtime_data_connector_name", 
-    data_asset_name="users_data",
-    runtime_parameters={"batch_data": df},
-    batch_identifiers={"default_identifier_name": "default_identifier"}
+print("🔍 Running validation...")
+
+# Get the data source and batch definition
+data_source = context.data_sources.get("local_pandas_filesystem")
+data_asset = data_source.get_asset("users_data")
+batch_definition = data_asset.get_batch_definition("users_batch")
+
+# Get the expectation suite
+suite = context.suites.get("users_basic_expectations")
+
+# Create a Validation Definition (modern GX 1.5+ approach)
+validation_definition = context.validation_definitions.add(
+    gx.ValidationDefinition(
+        name="users_validation",
+        data=batch_definition,
+        suite=suite
+    )
 )
 
-# Run validation
-print("🔍 Running validation...")
-checkpoint = context.add_or_update_checkpoint(
-    name="users_checkpoint",
-    batch_request=batch_request,
-    expectation_suite_name="users_basic_expectations"
+# Create and run a Checkpoint
+checkpoint = context.checkpoints.add(
+    gx.Checkpoint(
+        name="users_checkpoint",
+        validation_definitions=[validation_definition]
+    )
 )
 
 # Execute the checkpoint
@@ -29,7 +38,7 @@ print("✅ Validation complete!")
 print(f"Success: {results.success}")
 
 # Show detailed results
-validation_result = results.list_validation_results()[0]
+validation_result = results.run_results[list(results.run_results.keys())[0]]["validation_result"]
 print(f"\nValidation Results:")
 print(f"- Total expectations: {validation_result.statistics['evaluated_expectations']}")
 print(f"- Successful: {validation_result.statistics['successful_expectations']}")

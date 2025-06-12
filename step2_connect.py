@@ -1,49 +1,35 @@
 import great_expectations as gx
 import pandas as pd
 
-# Initialize Great Expectations context
+print(f"Great Expectations version: {gx.__version__}")
+
+# Initialize Great Expectations Data Context
 context = gx.get_context()
 
-# Read the CSV data directly with pandas
+# Read the CSV data
 df = pd.read_csv('./data/users.csv')
 
-# For Great Expectations 1.0+, we need to add a datasource differently
-try:
-    # Try the modern API first
-    datasource = context.add_or_update_datasource(
-        name="local_files",
-        class_name="Datasource",
-        execution_engine={
-            "class_name": "PandasExecutionEngine"
-        },
-        data_connectors={
-            "default_inferred_data_connector_name": {
-                "class_name": "InferredAssetDataConnector",
-                "base_directory": "./data",
-                "default_regex": {
-                    "group_names": ["data_asset_name"],
-                    "pattern": "(.*)\\.csv"
-                }
-            }
-        }
-    )
-    
-    # Get the data asset
-    batch_request = {
-        "datasource_name": "local_files",
-        "data_connector_name": "default_inferred_data_connector_name",
-        "data_asset_name": "users"
-    }
-    
-    print("✅ Connected to data!")
-    print(f"Datasource: {datasource.name}")
-    
-except Exception as e:
-    print(f"Error with datasource creation: {e}")
-    print("Using direct DataFrame approach...")
-    
-    # Fallback: work directly with the DataFrame
-    batch_request = None
+print("✅ Setting up data connection...")
+
+# Create a Pandas filesystem Data Source (GX 1.5+ fluent API)
+data_source = context.data_sources.add_pandas_filesystem(
+    name="local_pandas_filesystem",
+    base_directory="./data"
+)
+
+# Add a Data Asset for the CSV file
+data_asset = data_source.add_csv_asset(
+    name="users_data",
+    filename="users.csv"
+)
+
+# Create a Batch Definition
+batch_definition = data_asset.add_batch_definition_whole_table("users_batch")
+
+print("✅ Connected to data!")
+print(f"Data Source: {data_source.name}")
+print(f"Data Asset: {data_asset.name}")
+print(f"Batch Definition: {batch_definition.name}")
 
 print(f"\nData preview:")
 print(df.head())
