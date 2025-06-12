@@ -23,7 +23,7 @@ data_asset_name = "users"
 file_csv_asset = data_source.add_csv_asset(name=data_asset_name)
 # Create a Batch Definition
 batch_definition_name = "users.csv"
-batch_definition_path = "users.csv"  # Path relative to base_directory
+batch_definition_path = "users.csv" 
 
 batch_definition = file_csv_asset.add_batch_definition_path(
     name=batch_definition_name, path=batch_definition_path
